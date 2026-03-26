@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Home, Login, SignUp } from "./pages";
+import Navbar from "./components/Navbar/Navbar";
 
 const routes = (
   <Router>
@@ -12,7 +13,12 @@ const routes = (
 );
 
 const App = () => {
-  return <div>{routes}</div>;
+  return (
+    <div>
+      <Navbar />
+      {routes}
+    </div>
+  );
 };
 
 export default App;

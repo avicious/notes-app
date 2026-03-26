@@ -8,12 +8,8 @@
   }
 
   body {
-    background-color: #0f172a;
-    color: #e2e8f0;
     overflow-x: hidden;
-  }
-
-  .notes {
-    background-color: #1e293b;
+    background-color: #fcfcfc;
+    color: #333333;
   }
 }
