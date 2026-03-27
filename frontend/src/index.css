@@ -3,6 +3,13 @@
 @import "tailwindcss";
 
 @layer base {
+  :root {
+    --app-bg: #fafafa;
+    --app-text: #1a1a1a;
+    --app-border: #e5e7eb;
+    --app-accent: #2563eb;
+  }
+
   html {
     font-family: "Ubuntu", sans-serif;
   }
@@ -11,3 +18,5 @@
     overflow-x: hidden;
   }
 }
+
+
