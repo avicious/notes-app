@@ -6,7 +6,6 @@
   :root {
     --app-bg: #fafafa;
     --app-text: #1a1a1a;
-    --app-border: #e5e7eb;
     --app-accent: #2563eb;
   }
 
@@ -19,4 +18,8 @@
   }
 }
 
-
+@theme {
+  --color-paper: var(--app-bg);
+  --color-ink: var(--app-text);
+  --color-accent: var(--app-accent);
+}
