@@ -2,26 +2,22 @@
 
 @import "tailwindcss";
 
-@layer base {
-  :root {
-    --app-bg: #fafafa;
-    --app-text: #1a1a1a;
-    --app-accent: #2563eb;
-  }
+@theme {
+  --color-ghost: #fafafa;
+  --color-carbon: #1a1a1a;
+  --color-accent: #2563eb;
 
+  --font-ubuntu: "Ubuntu", sans-serif;
+}
+
+@layer base {
   html {
-    font-family: "Ubuntu", sans-serif;
+    font-family: var(--font-ubuntu);
   }
 
   body {
+    background-color: var(--color-ghost);
+    color: var(--color-carbon);
     overflow-x: hidden;
-    background-color: var(--app-bg);
-    color: var(--app-text);
   }
-}
-
-@theme {
-  --color-paper: var(--app-bg);
-  --color-ink: var(--app-text);
-  --color-accent: var(--app-accent);
 }
