@@ -11,10 +11,12 @@ const SearchBar = ({ value, onChange, handleSearch, onClearSearch }) => {
         onChange={onChange}
       />
 
-      <X
-        className="text-slate-400 cursor-pointer hover:text-slate-950 mr-3"
-        onClick={onClearSearch}
-      />
+      {value && (
+        <X
+          className="text-slate-400 cursor-pointer hover:text-slate-950 mr-3"
+          onClick={onClearSearch}
+        />
+      )}
 
       <Search
         className="text-slate-400 cursor-pointer hover:text-slate-950"
