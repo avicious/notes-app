@@ -1,3 +1,5 @@
+import ProfileInfo from "../Cards/ProfileInfo";
+
 const Navbar = () => {
   return (
     <nav className="bg-ghost flex items-center justify-between px-6 py-2 drop-shadow">
