@@ -1,3 +1,4 @@
+import { Plus } from "lucide-react";
 import NoteCard from "../../components/Cards/NoteCard";
 import Navbar from "../../components/Navbar/Navbar";
 
@@ -20,6 +21,13 @@ const Home = () => {
           />
         </div>
       </div>
+
+      <button
+        className="w-16 h-16 flex items-center justify-center rounded-2xl bg-accent hover:bg-accent/80 absolute right-10 bottom-10 cursor-pointer"
+        onClick={() => {}}
+      >
+        <Plus size={32} color="white" />
+      </button>
     </>
   );
 };
