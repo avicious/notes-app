@@ -2,10 +2,36 @@ import { useState } from "react";
 import TagInput from "../../components/Input/TagInput";
 import { X } from "lucide-react";
 
-const AddNotes = ({ onClose }) => {
+const AddNotes = ({ noteData, type, onClose }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState([]);
+
+  const [error, setError] = useState(null);
+
+  const addNewNote = async () => {};
+
+  const editNote = async () => {};
+
+  const handleAddNote = () => {
+    if (!title) {
+      setError("Please enter the title");
+      return;
+    }
+
+    if (!content) {
+      setError("Please enter the content");
+      return;
+    }
+
+    setError("");
+
+    if (type === "edit") {
+      editNote();
+    } else {
+      addNewNote();
+    }
+  };
 
   return (
     <div className="relative">
@@ -49,7 +75,12 @@ const AddNotes = ({ onClose }) => {
         <TagInput tags={tags} setTags={setTags} />
       </div>
 
-      <button className="btn-primary font-medium mt-5 p-3" onClick={() => {}}>
+      {error && <p className="text-red-500 text-xs pt-4">{error}</p>}
+
+      <button
+        className="btn-primary font-medium mt-5 p-3"
+        onClick={handleAddNote}
+      >
         Add
       </button>
     </div>

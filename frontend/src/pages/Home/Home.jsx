@@ -56,6 +56,8 @@ const Home = () => {
         className="w-[40%] bg-ghost rounded-md mx-auto mt-14 p-5 overflow-scroll"
       >
         <AddNotes
+          type={openModal.type}
+          noteData={openModal.data}
           onClose={() => {
             setOpenModal({ isShown: false, type: "add", data: null });
           }}
