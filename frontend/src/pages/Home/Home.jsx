@@ -1,6 +1,7 @@
 import { Plus } from "lucide-react";
 import NoteCard from "../../components/Cards/NoteCard";
 import Navbar from "../../components/Navbar/Navbar";
+import AddNotes from "./AddNotes";
 
 const Home = () => {
   return (
@@ -28,6 +29,8 @@ const Home = () => {
       >
         <Plus size={32} color="white" />
       </button>
+
+      <AddNotes />
     </>
   );
 };
