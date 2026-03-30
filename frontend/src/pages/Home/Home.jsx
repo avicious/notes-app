@@ -2,8 +2,16 @@ import { Plus } from "lucide-react";
 import NoteCard from "../../components/Cards/NoteCard";
 import Navbar from "../../components/Navbar/Navbar";
 import AddNotes from "./AddNotes";
+import { useState } from "react";
+import Modal from "react-modal";
 
 const Home = () => {
+  const [openModal, setOpenModal] = useState({
+    isShown: false,
+    type: "add",
+    data: null,
+  });
+
   return (
     <>
       <Navbar />
@@ -25,12 +33,34 @@ const Home = () => {
 
       <button
         className="w-16 h-16 flex items-center justify-center rounded-2xl bg-accent hover:bg-accent/80 absolute right-10 bottom-10 cursor-pointer"
-        onClick={() => {}}
+        onClick={() => {
+          setOpenModal({
+            isShown: true,
+            type: "add",
+            data: null,
+          });
+        }}
       >
         <Plus size={32} color="white" />
       </button>
 
-      <AddNotes />
+      <Modal
+        isOpen={openModal.isShown}
+        onRequestClose={() => {}}
+        style={{
+          overlay: {
+            backgroundColor: "rgba(0,0,0,0.2)",
+          },
+        }}
+        contentLabel=""
+        className="w-[40%] bg-ghost rounded-md mx-auto mt-14 p-5 overflow-scroll"
+      >
+        <AddNotes
+          onClose={() => {
+            setOpenModal({ isShown: false, type: "add", data: null });
+          }}
+        />
+      </Modal>
     </>
   );
 };
