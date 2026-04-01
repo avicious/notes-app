@@ -4,6 +4,7 @@ import "dotenv/config";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import User from "./models/User.js";
+import authenticateToken from "./utilities.js";
 
 mongoose.connect(process.env.MONGO_URI);
 
@@ -105,6 +106,11 @@ app.post("/login", async (req, res) => {
     });
   }
 });
+
+// Add Note
+app.post("/add-note", authenticateToken, async (req, res) => {
+  
+})
 
 app.listen(8000);
 
