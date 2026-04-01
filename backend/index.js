@@ -3,7 +3,6 @@ import cors from "cors";
 import "dotenv/config";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-import authenticateToken from "./utilities.js";
 import User from "./models/User.js";
 
 mongoose.connect(process.env.MONGO_URI);
