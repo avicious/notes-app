@@ -14,7 +14,7 @@ const SignUp = () => {
     e.preventDefault();
 
     if (!username) {
-      setError("Please enter a username.");
+      setError("Please enter your full name.");
       return;
     }
 
@@ -46,7 +46,7 @@ const SignUp = () => {
 
             <input
               type="text"
-              placeholder="Username"
+              placeholder="Full Name"
               className="input-box"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
