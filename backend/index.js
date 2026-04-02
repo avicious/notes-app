@@ -40,52 +40,46 @@ connectDB();
 app.post("/create-account", async (req, res) => {
   const { fullName, email, password } = req.body;
 
-  if (!fullName) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Full Name is required" });
-  }
-
-  if (!email) {
-    return res.status(400).json({ error: true, message: "Email is required" });
-  }
-
-  if (!password) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Password is required" });
+  if (!fullName || !email || !password) {
+    return res.status(400).json({
+      error: true,
+      message: "All fields (Full Name, Email, Password) are required",
+    });
   }
 
   try {
     const isUser = await User.findOne({ email });
-
     if (isUser) {
-      return res.json({
+      return res.status(409).json({
         error: true,
         message: "User already exists",
       });
     }
 
-    const newUser = new User({
-      fullName,
-      email,
-      password,
-    });
-
+    const newUser = new User({ fullName, email, password });
     await newUser.save();
 
-    const accessToken = jwt.sign({ newUser }, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: "36000m",
-    });
+    const accessToken = jwt.sign(
+      { userId: newUser._id },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "72h" },
+    );
 
-    return res.json({
+    return res.status(201).json({
       error: false,
-      newUser,
+      user: {
+        id: newUser._id,
+        fullName: newUser.fullName,
+        email: newUser.email,
+      },
       accessToken,
       message: "Registration Successful",
     });
   } catch (error) {
-    return res.status(500).json({ error: "Internal server error" });
+    console.error("Signup Error:", error);
+    return res
+      .status(500)
+      .json({ error: true, message: "Internal server error" });
   }
 });
 
