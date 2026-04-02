@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import PasswordInput from "../../components/Input/PasswordInput";
-import { validateEmail } from "../../utils/helper";
+import { validateEmail, validatePassword } from "../../utils/helper";
 
 const SignUp = () => {
   const [username, setUsername] = useState("");
@@ -23,8 +23,10 @@ const SignUp = () => {
       return;
     }
 
-    if (!password) {
-      setError("Please enter a valid password.");
+    const validate = validatePassword(password);
+
+    if (!validate.isValid) {
+      setError(validate.errors[0]);
       return;
     }
 
