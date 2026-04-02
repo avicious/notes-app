@@ -140,11 +140,11 @@ app.post("/add-note", authenticateToken, async (req, res) => {
   const { title, content, tags } = req.body;
   const user = req.user;
 
-  if (!title) {
+  if (!title || !title.trim()) {
     return res.status(400).json({ error: true, message: "Title is required" });
   }
 
-  if (!content) {
+  if (!content || !content.trim()) {
     return res
       .status(400)
       .json({ error: true, message: "Content is required" });
@@ -152,20 +152,21 @@ app.post("/add-note", authenticateToken, async (req, res) => {
 
   try {
     const note = new Note({
-      title,
-      content,
-      tags: tags || [],
-      userId: user._id,
+      title: title.trim(),
+      content: content.trim(),
+      tags: Array.isArray(tags) ? tags : [],
+      userId: user.userId,
     });
 
     await note.save();
 
-    return res.json({
+    return res.status(201).json({
       error: false,
       note,
       message: "Note added successfully",
     });
   } catch (error) {
+    console.error("Add Note Error:", error);
     return res
       .status(500)
       .json({ error: true, message: "Internal Server Error" });
