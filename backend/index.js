@@ -87,39 +87,51 @@ app.post("/create-account", async (req, res) => {
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
-  if (!email) {
-    return res.status(400).json({ error: true, message: "Email is required" });
-  }
-
-  if (!password) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Password is required" });
-  }
-
-  const userInfo = await User.findOne({ email: email });
-
-  if (!userInfo) {
-    return res.status(400).json({ error: true, message: "User not found" });
-  }
-
-  if (userInfo.email === email && userInfo.password === password) {
-    const user = { user: userInfo };
-    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: "36000m",
+  if (!email || !password) {
+    return res.status(400).json({
+      error: true,
+      message: "Email and password are required",
     });
+  }
+
+  try {
+    const userInfo = await User.findOne({ email });
+
+    if (!userInfo) {
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid credentials" });
+    }
+
+    const isPasswordValid = await userInfo.comparePassword(password);
+
+    if (!isPasswordValid) {
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid credentials" });
+    }
+
+    const accessToken = jwt.sign(
+      { userId: userInfo._id },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "72h" },
+    );
 
     return res.json({
       error: false,
       message: "Login Successful",
-      email,
+      user: {
+        id: userInfo._id,
+        fullName: userInfo.fullName,
+        email: userInfo.email,
+      },
       accessToken,
     });
-  } else {
-    return res.status(400).json({
-      error: true,
-      message: "Invalid Credentials",
-    });
+  } catch (error) {
+    console.error("Login Error:", error);
+    return res
+      .status(500)
+      .json({ error: true, message: "Internal server error" });
   }
 });
 
@@ -160,6 +172,6 @@ app.post("/add-note", authenticateToken, async (req, res) => {
   }
 });
 
-app.listen(8000, () => console.log("Server running on port 5000"));
+app.listen(8000, () => console.log("Server running on port 8000"));
 
 export default app;
