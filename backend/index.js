@@ -1,25 +1,41 @@
-import express from "express";
-import cors from "cors";
 import "dotenv/config";
-import jwt from "jsonwebtoken";
+import express from "express";
 import mongoose from "mongoose";
+import cors from "cors";
+import jwt from "jsonwebtoken";
 import authenticateToken from "./utilities.js";
 
 import User from "./models/User.js";
 import Note from "./models/Note.js";
 
-mongoose.connect(process.env.MONGO_URI);
-
 const app = express();
 
+// Middleware
 app.use(express.json());
-
 app.use(
   cors({
-    origin: "*",
+    origin:
+      process.env.NODE_ENV === "production"
+        ? "https://notes-app-domain.com"
+        : "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE"],
   }),
 );
 
+// Database
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("MongoDB Connected...");
+  } catch (error) {
+    console.error("Database connection failed:", err.message);
+    process.exit(1);
+  }
+};
+
+connectDB();
+
+// Routes
 // Create Account
 app.post("/create-account", async (req, res) => {
   const { fullName, email, password } = req.body;
@@ -40,33 +56,37 @@ app.post("/create-account", async (req, res) => {
       .json({ error: true, message: "Password is required" });
   }
 
-  const isUser = await User.findOne({ email: email });
+  try {
+    const isUser = await User.findOne({ email });
 
-  if (isUser) {
-    return res.json({
-      error: true,
-      message: "User already exists",
+    if (isUser) {
+      return res.json({
+        error: true,
+        message: "User already exists",
+      });
+    }
+
+    const newUser = new User({
+      fullName,
+      email,
+      password,
     });
+
+    await newUser.save();
+
+    const accessToken = jwt.sign({ newUser }, process.env.ACCESS_TOKEN_SECRET, {
+      expiresIn: "36000m",
+    });
+
+    return res.json({
+      error: false,
+      newUser,
+      accessToken,
+      message: "Registration Successful",
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Internal server error" });
   }
-
-  const user = new User({
-    fullName,
-    email,
-    password,
-  });
-
-  await user.save();
-
-  const accessToken = jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "36000m",
-  });
-
-  return res.json({
-    error: false,
-    user,
-    accessToken,
-    message: "Registration Successful",
-  });
 });
 
 // Login
@@ -146,6 +166,6 @@ app.post("/add-note", authenticateToken, async (req, res) => {
   }
 });
 
-app.listen(8000);
+app.listen(8000, () => console.log("Server running on port 5000"));
 
 export default app;
