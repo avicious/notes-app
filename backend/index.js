@@ -160,8 +160,8 @@ app.post(
 
 // Edit Note
 app.patch("/notes/:noteId", authenticateToken, async (req, res) => {
-  const { noteId } = req.params;
   const { title, content, tags, isPinned } = req.body;
+  const { noteId } = req.params;
 
   const { userId } = req.user;
 
