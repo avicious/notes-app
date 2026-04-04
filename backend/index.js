@@ -9,7 +9,7 @@ import User from "./models/User.js";
 import Note from "./models/Note.js";
 
 import validate from "./middlewares/validate.js";
-import registerSchema from "./validators/auth.validator.js";
+import { registerSchema, loginSchema } from "./validators/auth.validator.js";
 
 const app = express();
 
@@ -80,15 +80,8 @@ app.post("/auth/register", validate(registerSchema), async (req, res) => {
 });
 
 // Login
-app.post("/auth/login", async (req, res) => {
+app.post("/auth/login", validate(loginSchema), async (req, res) => {
   const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({
-      error: true,
-      message: "Email and password are required",
-    });
-  }
 
   try {
     const userInfo = await User.findOne({ email });
