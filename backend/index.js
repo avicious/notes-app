@@ -10,6 +10,7 @@ import Note from "./models/Note.js";
 
 import validate from "./middlewares/validate.js";
 import { registerSchema, loginSchema } from "./validators/auth.validator.js";
+import { noteSchema } from "./validators/notes.validator.js";
 
 const app = express();
 
@@ -125,42 +126,37 @@ app.post("/auth/login", validate(loginSchema), async (req, res) => {
 });
 
 // Add Note
-app.post("/notes", authenticateToken, async (req, res) => {
-  const { title, content, tags } = req.body;
-  const user = req.user;
+app.post(
+  "/notes",
+  authenticateToken,
+  validate(noteSchema),
+  async (req, res) => {
+    const { title, content, tags } = req.body;
+    const user = req.user;
 
-  if (!title || !title.trim()) {
-    return res.status(400).json({ error: true, message: "Title is required" });
-  }
+    try {
+      const note = new Note({
+        title: title.trim(),
+        content: content.trim(),
+        tags: Array.isArray(tags) ? tags : [],
+        userId: user.userId,
+      });
 
-  if (!content || !content.trim()) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Content is required" });
-  }
+      await note.save();
 
-  try {
-    const note = new Note({
-      title: title.trim(),
-      content: content.trim(),
-      tags: Array.isArray(tags) ? tags : [],
-      userId: user.userId,
-    });
-
-    await note.save();
-
-    return res.status(201).json({
-      error: false,
-      note,
-      message: "Note added successfully",
-    });
-  } catch (error) {
-    console.error("Add Note Error:", error);
-    return res
-      .status(500)
-      .json({ error: true, message: "Internal Server Error" });
-  }
-});
+      return res.status(201).json({
+        error: false,
+        note,
+        message: "Note added successfully",
+      });
+    } catch (error) {
+      console.error("Add Note Error:", error);
+      return res
+        .status(500)
+        .json({ error: true, message: "Internal Server Error" });
+    }
+  },
+);
 
 // Edit Note
 app.patch("/notes/:noteId", authenticateToken, async (req, res) => {
