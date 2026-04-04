@@ -8,6 +8,9 @@ import authenticateToken from "./utilities.js";
 import User from "./models/User.js";
 import Note from "./models/Note.js";
 
+import validate from "./middlewares/validate.js";
+import registerSchema from "./validators/auth.validator.js";
+
 const app = express();
 
 // Middleware
@@ -18,7 +21,7 @@ app.use(
       process.env.NODE_ENV === "production"
         ? "https://notes-app-domain.com"
         : "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   }),
 );
 
@@ -26,9 +29,9 @@ app.use(
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    console.log("MongoDB Connected...");
+    console.log("MongoDB Connected");
   } catch (error) {
-    console.error("Database connection failed:", err.message);
+    console.error("Database connection failed:", error.message);
     process.exit(1);
   }
 };
@@ -36,16 +39,9 @@ const connectDB = async () => {
 connectDB();
 
 // Routes
-// Create Account
-app.post("/create-account", async (req, res) => {
+// Register
+app.post("/auth/register", validate(registerSchema), async (req, res) => {
   const { fullName, email, password } = req.body;
-
-  if (!fullName || !email || !password) {
-    return res.status(400).json({
-      error: true,
-      message: "All fields (Full Name, Email, Password) are required",
-    });
-  }
 
   try {
     const isUser = await User.findOne({ email });
@@ -84,7 +80,7 @@ app.post("/create-account", async (req, res) => {
 });
 
 // Login
-app.post("/login", async (req, res) => {
+app.post("/auth/login", async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -136,7 +132,7 @@ app.post("/login", async (req, res) => {
 });
 
 // Add Note
-app.post("/add-note", authenticateToken, async (req, res) => {
+app.post("/notes", authenticateToken, async (req, res) => {
   const { title, content, tags } = req.body;
   const user = req.user;
 
