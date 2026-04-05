@@ -29,4 +29,11 @@ const editNoteSchema = Joi.object({
       "You must provide at least one field to update (title, content, tags, or isPinned)",
   });
 
-export { getNotesSchema, noteSchema, editNoteSchema };
+const deleteNoteSchema = Joi.object({
+  noteId: Joi.string().hex().length(24).required().messages({
+    "string.hex": "Invalid Note ID format",
+    "string.length": "Invalid Note ID format",
+  }),
+});
+
+export { getNotesSchema, noteSchema, editNoteSchema, deleteNoteSchema };

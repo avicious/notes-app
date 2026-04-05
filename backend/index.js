@@ -14,6 +14,7 @@ import {
   getNotesSchema,
   noteSchema,
   editNoteSchema,
+  deleteNoteSchema,
 } from "./validators/notes.validator.js";
 
 const app = express();
@@ -111,7 +112,7 @@ app.post("/auth/login", validate(loginSchema), async (req, res) => {
       { expiresIn: "72h" },
     );
 
-    return res.json({
+    return res.status(200).json({
       error: false,
       message: "Login Successful",
       user: {
@@ -177,14 +178,14 @@ app.post(
   validate(noteSchema),
   async (req, res) => {
     const { title, content, tags } = req.body;
-    const user = req.user;
+    const { userId } = req.user;
 
     try {
       const note = new Note({
         title: title.trim(),
         content: content.trim(),
         tags: Array.isArray(tags) ? tags : [],
-        userId: user.userId,
+        userId,
       });
 
       await note.save();
@@ -210,7 +211,6 @@ app.patch(
   validate(editNoteSchema),
   async (req, res) => {
     const { noteId } = req.params;
-
     const { userId } = req.user;
 
     try {
@@ -237,6 +237,43 @@ app.patch(
       return res
         .status(500)
         .json({ error: true, message: "Internal Server Error" });
+    }
+  },
+);
+
+// Delete Note
+app.delete(
+  "/notes/:noteId",
+  authenticateToken,
+  validate(deleteNoteSchema, "params"),
+  async (req, res) => {
+    const { noteId } = req.params;
+    const { userId } = req.user;
+
+    try {
+      const deletedNote = await Note.findOneAndDelete({
+        _id: noteId,
+        userId: userId,
+      });
+
+      if (!deletedNote) {
+        return res.status(404).json({
+          error: true,
+          message: "Note not found",
+        });
+      }
+
+      return res.status(200).json({
+        error: false,
+        message: "Note deleted successfully",
+      });
+    } catch (error) {
+      console.error("Error deleting note:", error);
+
+      return res.status(500).json({
+        error: true,
+        message: "Internal Server Error",
+      });
     }
   },
 );
