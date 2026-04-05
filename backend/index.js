@@ -130,6 +130,34 @@ app.post("/auth/login", validate(loginSchema), async (req, res) => {
   }
 });
 
+// Get User
+app.get("/get-user", authenticateToken, async (req, res) => {
+  const { userId } = req.user;
+
+  try {
+    const user = await User.findById(userId).select("-password -__v");
+
+    if (!user) {
+      return res.status(404).json({
+        error: true,
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      error: false,
+      user,
+      message: "User profile retrieved successfully",
+    });
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    return res.status(500).json({
+      error: true,
+      message: "Internal Server Error",
+    });
+  }
+});
+
 // All Notes
 app.get(
   "/notes",
