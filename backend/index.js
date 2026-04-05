@@ -10,7 +10,11 @@ import Note from "./models/Note.js";
 
 import validate from "./middlewares/validate.js";
 import { registerSchema, loginSchema } from "./validators/auth.validator.js";
-import { noteSchema, editNoteSchema } from "./validators/notes.validator.js";
+import {
+  getNotesSchema,
+  noteSchema,
+  editNoteSchema,
+} from "./validators/notes.validator.js";
 
 const app = express();
 
@@ -126,24 +130,45 @@ app.post("/auth/login", validate(loginSchema), async (req, res) => {
 });
 
 // All Notes
-app.get("/notes", authenticateToken, async (req, res) => {
-  const { userId } = req.user;
+app.get(
+  "/notes",
+  authenticateToken,
+  validate(getNotesSchema, "query"),
+  async (req, res) => {
+    const { userId } = req.user;
+    const { page, limit } = req.query;
 
-  try {
-    const notes = await Note.find({ userId }).sort({ isPinned: -1 });
+    const skip = (page - 1) * limit;
 
-    return res.status(200).json({
-      error: false,
-      notes,
-      message: "All notes retrieved successfully",
-    });
-  } catch (error) {
-    return res.status(500).json({
-      error: true,
-      message: "Internal Server Error",
-    });
-  }
-});
+    try {
+      const notes = await Note.find({ userId })
+        .select("-__v -userId")
+        .sort({ isPinned: -1, updatedAt: -1 })
+        .skip(skip)
+        .limit(limit);
+
+      const totalNotes = await Note.countDocuments({ userId });
+
+      return res.status(200).json({
+        error: false,
+        message: "All notes retrieved successfully",
+        notes,
+        pagination: {
+          total: totalNotes,
+          page,
+          pages: Math.ceil(totalNotes / (limit || 20)) || 1,
+        },
+      });
+    } catch (error) {
+      console.error("Error fetching notes for user:", userId, error);
+
+      return res.status(500).json({
+        error: true,
+        message: "Internal Server Error",
+      });
+    }
+  },
+);
 
 // Add Note
 app.post(
