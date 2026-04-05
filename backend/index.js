@@ -129,8 +129,6 @@ app.post("/auth/login", validate(loginSchema), async (req, res) => {
 app.get("/notes", authenticateToken, async (req, res) => {
   const { userId } = req.user;
 
-  console.log(userId);
-
   try {
     const notes = await Note.find({ userId }).sort({ isPinned: -1 });
 
