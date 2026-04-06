@@ -1,5 +1,4 @@
 import axios from "axios";
-import { Navigate } from "react-router-dom";
 import { BASE_URL, AUTH_TOKEN_KEY } from "./constants";
 
 const axiosInstance = axios.create({
@@ -31,7 +30,7 @@ axiosInstance.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       console.warn("Unauthorized access - Token expired or invalid.");
       localStorage.removeItem(AUTH_TOKEN_KEY);
-      return <Navigate to="/login" replace />;
+      window.location.href = "/login";
     }
     return Promise.reject(error);
   },
