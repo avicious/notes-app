@@ -62,7 +62,7 @@ const AddNotes = ({ noteData, type, onClose }) => {
         </label>
         <textarea
           id="content"
-          className="text-sm text-carbon outline-dashed bg-slate-100 p-2 rounded"
+          className="text-sm text-carbon outline-none bg-slate-100 p-2 rounded"
           placeholder="Content"
           rows={10}
           value={content}
