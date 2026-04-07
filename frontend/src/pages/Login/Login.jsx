@@ -84,7 +84,7 @@ const Login = () => {
               Not registered yet?{" "}
               <Link
                 to="/sign-up"
-                className="font-medium text-accent underline hover:decoration-none cursor-pointer"
+                className="font-medium text-accent underline hover:decoration-dashed cursor-pointer"
               >
                 Create an Account
               </Link>
