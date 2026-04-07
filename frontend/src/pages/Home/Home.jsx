@@ -28,6 +28,39 @@ const Home = () => {
             onDelete={() => {}}
             onPinNote={() => {}}
           />
+
+          <NoteCard
+            title="Meeting on 7th April"
+            date="3rd April 2026"
+            content="Meeting on 7th April"
+            tags="#Meeting"
+            isPinned={true}
+            onEdit={() => {}}
+            onDelete={() => {}}
+            onPinNote={() => {}}
+          />
+
+          <NoteCard
+            title="Meeting on 7th April"
+            date="3rd April 2026"
+            content="Meeting on 7th April"
+            tags="#Meeting"
+            isPinned={true}
+            onEdit={() => {}}
+            onDelete={() => {}}
+            onPinNote={() => {}}
+          />
+
+          <NoteCard
+            title="Meeting on 7th April"
+            date="3rd April 2026"
+            content="Meeting on 7th April"
+            tags="#Meeting"
+            isPinned={true}
+            onEdit={() => {}}
+            onDelete={() => {}}
+            onPinNote={() => {}}
+          />
         </div>
       </div>
 
