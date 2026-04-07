@@ -17,7 +17,7 @@ const Home = () => {
       <Navbar />
 
       <div className="app-container">
-        <div className="grid grid-cols-3 gap-4 mt-8">
+        <div className="grid grid-cols-4 gap-4 mt-8">
           <NoteCard
             title="Meeting on 7th April"
             date="3rd April 2026"
