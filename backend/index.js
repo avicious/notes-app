@@ -150,6 +150,28 @@ app.post("/auth/login", validate(loginSchema), async (req, res) => {
   }
 });
 
+// Logout
+app.post("/auth/logout", (req, res) => {
+  try {
+    res.clearCookie("__Host-accessToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Lax",
+      path: "/",
+    });
+
+    return res.status(200).json({
+      error: false,
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    console.error("Logout Error:", error);
+    return res
+      .status(500)
+      .json({ error: true, message: "Internal server error" });
+  }
+});
+
 // Get User
 app.get("/get-user", authenticateToken, async (req, res) => {
   const { userId } = req.user;
