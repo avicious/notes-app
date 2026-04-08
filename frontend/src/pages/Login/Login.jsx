@@ -2,9 +2,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import PasswordInput from "../../components/Input/PasswordInput";
 import { useState } from "react";
-import { validateEmail } from "../../utils/helper";
+import { validateEmail, validatePassword } from "../../utils/helper";
 import axiosInstance from "../../utils/axiosInstance";
-import { AUTH_TOKEN_KEY } from "../../utils/constants";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -26,6 +25,13 @@ const Login = () => {
       return;
     }
 
+    const validate = validatePassword(password);
+
+    if (!validate.isValid) {
+      setError(validate.errors[0]);
+      return;
+    }
+
     setError("");
 
     try {
@@ -34,8 +40,7 @@ const Login = () => {
         password: password,
       });
 
-      if (response.data && response.data.accessToken) {
-        localStorage.setItem(AUTH_TOKEN_KEY, response.data.accessToken);
+      if (response.status === 200 || response.status === 201) {
         navigate("/dashboard");
       }
     } catch (error) {
