@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import "dotenv/config";
 
 function authenticateToken(req, res, next) {
-  const token = req.cookies.accessToken;
+  const token = req.cookies["__Host-accessToken"];
 
   if (!token) {
     return res.status(401).json({
@@ -15,7 +15,7 @@ function authenticateToken(req, res, next) {
     if (err) {
       res.clearCookie("__Host-accessToken", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: true,
         sameSite: "Lax",
         path: "/",
       });

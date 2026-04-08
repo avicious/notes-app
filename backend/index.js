@@ -74,7 +74,7 @@ app.post("/auth/register", validate(registerSchema), async (req, res) => {
     return res
       .cookie("__Host-accessToken", accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: true,
         sameSite: "Lax",
         maxAge: 72 * 60 * 60 * 1000,
         path: "/",
