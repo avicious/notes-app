@@ -1,26 +1,27 @@
 import axios from "axios";
-import { BASE_URL, AUTH_TOKEN_KEY } from "./constants";
+import { BASE_URL } from "./constants";
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
   timeout: 10000,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const accessToken = localStorage.getItem(AUTH_TOKEN_KEY);
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  },
-);
+export const performLogout = async () => {
+  try {
+    await axios.post(`${BASE_URL}/logout`, {}, { withCredentials: true });
+  } catch (error) {
+    console.error(
+      "Server logout failed, but clearing local state anyway.",
+      error,
+    );
+  } finally {
+    window.location.href = "/login";
+  }
+};
 
 axiosInstance.interceptors.response.use(
   (response) => {
@@ -29,8 +30,11 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     if (error.response && error.response.status === 401) {
       console.warn("Unauthorized access - Token expired or invalid.");
-      localStorage.removeItem(AUTH_TOKEN_KEY);
-      window.location.href = "/login";
+
+      const originalRequestUrl = error.config.url;
+      if (originalRequestUrl !== "/logout") {
+        await performLogout();
+      }
     }
     return Promise.reject(error);
   },
