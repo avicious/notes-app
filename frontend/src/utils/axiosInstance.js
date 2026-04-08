@@ -12,7 +12,7 @@ const axiosInstance = axios.create({
 
 export const performLogout = async () => {
   try {
-    await axios.post(`${BASE_URL}/logout`, {}, { withCredentials: true });
+    await axios.post(`${BASE_URL}/auth/logout`, {}, { withCredentials: true });
   } catch (error) {
     console.error(
       "Server logout failed, but clearing local state anyway.",

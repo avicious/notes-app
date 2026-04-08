@@ -66,7 +66,7 @@ app.post("/auth/register", validate(registerSchema), async (req, res) => {
     await newUser.save();
 
     const accessToken = jwt.sign(
-      { userId: newUser._id, email: newUser.email },
+      { userId: newUser._id },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "72h" },
     );
@@ -119,7 +119,7 @@ app.post("/auth/login", validate(loginSchema), async (req, res) => {
     }
 
     const accessToken = jwt.sign(
-      { userId: userInfo._id, email: userInfo.email },
+      { userId: userInfo._id },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "72h" },
     );
@@ -252,8 +252,8 @@ app.post(
 
     try {
       const note = new Note({
-        title: title.trim(),
-        content: content.trim(),
+        title: title.trim() || "Untitled",
+        content: content.trim() || "",
         tags: Array.isArray(tags) ? tags : [],
         userId,
       });
@@ -293,7 +293,13 @@ app.patch(
         });
       }
 
-      Object.assign(note, req.body);
+      const allowedUpdates = ["title", "content", "tags", "isPinned"];
+
+      allowedUpdates.forEach((update) => {
+        if (req.body[update] !== undefined) {
+          note[update] = req.body[update];
+        }
+      });
 
       await note.save();
 
