@@ -119,21 +119,29 @@ app.post("/auth/login", validate(loginSchema), async (req, res) => {
     }
 
     const accessToken = jwt.sign(
-      { userId: userInfo._id },
+      { userId: userInfo._id, email: userInfo.email },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "72h" },
     );
 
-    return res.status(200).json({
-      error: false,
-      message: "Login Successful",
-      user: {
-        id: userInfo._id,
-        fullName: userInfo.fullName,
-        email: userInfo.email,
-      },
-      accessToken,
-    });
+    return res
+      .cookie("__Host-accessToken", accessToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "Lax",
+        maxAge: 72 * 60 * 60 * 1000,
+        path: "/",
+      })
+      .status(200)
+      .json({
+        error: false,
+        message: "Login Successful",
+        user: {
+          id: userInfo._id,
+          fullName: userInfo.fullName,
+          email: userInfo.email,
+        },
+      });
   } catch (error) {
     console.error("Login Error:", error);
     return res
