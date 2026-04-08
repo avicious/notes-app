@@ -66,21 +66,29 @@ app.post("/auth/register", validate(registerSchema), async (req, res) => {
     await newUser.save();
 
     const accessToken = jwt.sign(
-      { userId: newUser._id },
+      { userId: newUser._id, email: newUser.email },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "72h" },
     );
 
-    return res.status(201).json({
-      error: false,
-      user: {
-        id: newUser._id,
-        fullName: newUser.fullName,
-        email: newUser.email,
-      },
-      accessToken,
-      message: "Registration Successful",
-    });
+    return res
+      .cookie("__Host-accessToken", accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "Lax",
+        maxAge: 72 * 60 * 60 * 1000,
+        path: "/",
+      })
+      .status(201)
+      .json({
+        error: false,
+        message: "Registration Successful",
+        user: {
+          id: newUser._id,
+          fullName: newUser.fullName,
+          email: newUser.email,
+        },
+      });
   } catch (error) {
     console.error("Signup Error:", error);
     return res
