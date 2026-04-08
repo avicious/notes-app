@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
 import authenticateToken from "./utilities.js";
 
@@ -18,6 +19,9 @@ import {
 } from "./validators/notes.validator.js";
 
 const app = express();
+
+// Cookie Parser
+app.use(cookieParser());
 
 // Middleware
 app.use(express.json());

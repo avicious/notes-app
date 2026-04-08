@@ -2,20 +2,28 @@ import jwt from "jsonwebtoken";
 import "dotenv/config";
 
 function authenticateToken(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+  const token = req.cookies.accessToken;
 
   if (!token) {
-    return res
-      .status(401)
-      .json({ error: true, message: "Access token missing" });
+    return res.status(401).json({
+      error: true,
+      message: "Authentication required (Cookie missing)",
+    });
   }
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decodedPayload) => {
     if (err) {
-      return res
-        .status(403)
-        .json({ error: true, message: "Invalid or expired token" });
+      res.clearCookie("__Host-accessToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "Lax",
+        path: "/",
+      });
+
+      return res.status(403).json({
+        error: true,
+        message: "Session expired or invalid. Please log in again.",
+      });
     }
 
     req.user = decodedPayload;

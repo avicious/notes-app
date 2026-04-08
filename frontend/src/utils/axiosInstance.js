@@ -28,7 +28,10 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   async (error) => {
-    if (error.response && error.response.status === 401) {
+    if (
+      error.response &&
+      (error.response.status === 401 || error.response.status === 403)
+    ) {
       console.warn("Unauthorized access - Token expired or invalid.");
 
       const originalRequestUrl = error.config.url;
