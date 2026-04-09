@@ -17,23 +17,33 @@ const Home = () => {
   const [userInfo, setUserInfo] = useState(null);
   const navigate = useNavigate();
 
-  const getUserInfo = async () => {
-    try {
-      const response = await axiosInstance.get("/get-user");
-      if (response.data && response.data.user) {
-        setUserInfo(response.data.user);
-      }
-    } catch (error) {
-      if (error.response.status === 401) {
-        navigate("/login");
-      }
-    }
-  };
-
   useEffect(() => {
+    const controller = new AbortController();
+
+    const getUserInfo = async () => {
+      try {
+        const response = await axiosInstance.get("/get-user", {
+          signal: controller.signal,
+        });
+
+        if (response.data?.user) {
+          setUserInfo(response.data.user);
+        }
+      } catch (error) {
+        if (error.name === "CanceledError") return;
+
+        if (error.response?.status === 401) {
+          navigate("/login");
+        }
+      }
+    };
+
     getUserInfo();
-    return () => {};
-  }, []);
+
+    return () => {
+      controller.abort();
+    };
+  }, [navigate]);
 
   return (
     <>
