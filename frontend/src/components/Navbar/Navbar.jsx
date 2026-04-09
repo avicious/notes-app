@@ -1,15 +1,14 @@
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 import ProfileInfo from "../Cards/ProfileInfo";
 import SearchBar from "../SearchBar/SearchBar";
+import { performLogout } from "../../utils/axiosInstance";
 
 const Navbar = ({ userInfo }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const navigate = useNavigate();
 
   const onLogout = () => {
-    navigate("/login");
+    performLogout();
   };
 
   const handleSearch = () => {};
@@ -29,7 +28,7 @@ const Navbar = ({ userInfo }) => {
         onClearSearch={onClearSearch}
       />
 
-      <ProfileInfo onLogout={onLogout} />
+      <ProfileInfo userInfo={userInfo} onLogout={onLogout} />
     </nav>
   );
 };
