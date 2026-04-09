@@ -15,6 +15,7 @@ const Home = () => {
   });
 
   const [userInfo, setUserInfo] = useState(null);
+  const [allNotes, setAllNotes] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,22 +46,46 @@ const Home = () => {
     };
   }, [navigate]);
 
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const getAllNotes = async () => {
+      try {
+        const response = await axiosInstance.get("/notes");
+        if (response.data && response.data.notes) {
+          setAllNotes(response.data.notes);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getAllNotes();
+
+    return () => {
+      controller.abort();
+    };
+  }, []);
+
   return (
     <>
       <Navbar userInfo={userInfo} />
 
       <div className="app-container">
         <div className="grid grid-cols-4 gap-4 mt-8">
-          <NoteCard
-            title="Meeting on 7th April"
-            date="3rd April 2026"
-            content="Meeting on 7th April"
-            tags="#Meeting"
-            isPinned={true}
-            onEdit={() => {}}
-            onDelete={() => {}}
-            onPinNote={() => {}}
-          />
+          {allNotes.map((item) => (
+            <NoteCard
+              key={item._id}
+              title={item.title}
+              date={item.createdAt}
+              content={item.content}
+              tags={item.tags}
+              isPinned={item.isPinned}
+              onEdit={() => {}}
+              onDelete={() => {}}
+              onPinNote={() => {}}
+            />
+          ))}
         </div>
       </div>
 
