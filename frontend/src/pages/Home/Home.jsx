@@ -4,6 +4,7 @@ import Navbar from "../../components/Navbar/Navbar";
 import AddNotes from "./AddNotes";
 import { useState } from "react";
 import Modal from "react-modal";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [openModal, setOpenModal] = useState({
@@ -11,6 +12,9 @@ const Home = () => {
     type: "add",
     data: null,
   });
+
+  const [userInfo, setUserInfo] = useState(null);
+  const navigate = useNavigate();
 
   return (
     <>
