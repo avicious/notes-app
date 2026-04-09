@@ -2,7 +2,7 @@ import { Plus } from "lucide-react";
 import NoteCard from "../../components/Cards/NoteCard";
 import Navbar from "../../components/Navbar/Navbar";
 import AddNotes from "./AddNotes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
@@ -30,9 +30,14 @@ const Home = () => {
     }
   };
 
+  useEffect(() => {
+    getUserInfo();
+    return () => {};
+  }, []);
+
   return (
     <>
-      <Navbar />
+      <Navbar userInfo={userInfo} />
 
       <div className="app-container">
         <div className="grid grid-cols-4 gap-4 mt-8">
