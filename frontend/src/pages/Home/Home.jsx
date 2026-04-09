@@ -18,6 +18,8 @@ const Home = () => {
   const [allNotes, setAllNotes] = useState([]);
   const navigate = useNavigate();
 
+  let getAllNotes;
+
   useEffect(() => {
     const controller = new AbortController();
 
@@ -49,7 +51,7 @@ const Home = () => {
   useEffect(() => {
     const controller = new AbortController();
 
-    const getAllNotes = async () => {
+    getAllNotes = async () => {
       try {
         const response = await axiosInstance.get("/notes", {
           signal: controller.signal,
@@ -123,6 +125,7 @@ const Home = () => {
           onClose={() => {
             setOpenModal({ isShown: false, type: "add", data: null });
           }}
+          getAllNotes={getAllNotes}
         />
       </Modal>
     </>

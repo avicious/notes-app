@@ -1,15 +1,35 @@
 import { useState } from "react";
 import TagInput from "../../components/Input/TagInput";
 import { X } from "lucide-react";
+import axiosInstance from "../../utils/axiosInstance";
 
-const AddNotes = ({ noteData, type, onClose }) => {
+const AddNotes = ({ noteData, type, getAllNotes, onClose }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState([]);
 
   const [error, setError] = useState(null);
 
-  const addNewNote = async () => {};
+  const addNewNote = async () => {
+    try {
+      const response = await axiosInstance.post("/notes", {
+        title,
+        content,
+        tags,
+      });
+
+      if (response.data?.note) {
+        await getAllNotes();
+        onClose();
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        "An unexpected error occurred. Please try again.";
+
+      setError(errorMessage);
+    }
+  };
 
   const editNote = async () => {};
 
