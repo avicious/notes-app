@@ -5,6 +5,7 @@ import AddNotes from "./AddNotes";
 import { useState } from "react";
 import Modal from "react-modal";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../utils/axiosInstance";
 
 const Home = () => {
   const [openModal, setOpenModal] = useState({
@@ -15,6 +16,19 @@ const Home = () => {
 
   const [userInfo, setUserInfo] = useState(null);
   const navigate = useNavigate();
+
+  const getUserInfo = async () => {
+    try {
+      const response = await axiosInstance.get("/get-user");
+      if (response.data && response.data.user) {
+        setUserInfo(response.data.user);
+      }
+    } catch (error) {
+      if (error.response.status === 401) {
+        navigate("/login");
+      }
+    }
+  };
 
   return (
     <>
