@@ -51,12 +51,16 @@ const Home = () => {
 
     const getAllNotes = async () => {
       try {
-        const response = await axiosInstance.get("/notes");
-        if (response.data && response.data.notes) {
+        const response = await axiosInstance.get("/notes", {
+          signal: controller.signal,
+        });
+
+        if (response.data?.notes) {
           setAllNotes(response.data.notes);
         }
       } catch (error) {
-        console.log(error);
+        if (error.name === "CanceledError") return;
+        console.error("Fetch error:", error);
       }
     };
 
