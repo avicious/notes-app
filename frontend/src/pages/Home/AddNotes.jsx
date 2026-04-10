@@ -3,7 +3,13 @@ import TagInput from "../../components/Input/TagInput";
 import { X } from "lucide-react";
 import axiosInstance from "../../utils/axiosInstance";
 
-const AddNotes = ({ noteData, type, getAllNotes, onClose }) => {
+const AddNotes = ({
+  noteData,
+  type,
+  getAllNotes,
+  onClose,
+  handleShowMessage,
+}) => {
   const [title, setTitle] = useState(noteData?.title || "");
   const [content, setContent] = useState(noteData?.content || "");
   const [tags, setTags] = useState(noteData?.tags || []);
@@ -19,6 +25,7 @@ const AddNotes = ({ noteData, type, getAllNotes, onClose }) => {
       });
 
       if (response.data?.note) {
+        handleShowMessage("Note Added Successfully", "add");
         await getAllNotes();
         onClose();
       }
@@ -40,6 +47,7 @@ const AddNotes = ({ noteData, type, getAllNotes, onClose }) => {
       });
 
       if (response.data?.note) {
+        handleShowMessage("Note Updated Successfully", "add");
         await getAllNotes();
         onClose();
       }

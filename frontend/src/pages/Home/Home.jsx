@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import Modal from "react-modal";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
+import Message from "../../components/Message/Message";
 
 const Home = () => {
   const [openModal, setOpenModal] = useState({
@@ -14,12 +15,33 @@ const Home = () => {
     data: null,
   });
 
+  const [showMessage, setShowMessage] = useState({
+    isShown: false,
+    message: "",
+    type: "add",
+  });
+
   const [userInfo, setUserInfo] = useState(null);
   const [allNotes, setAllNotes] = useState([]);
   const navigate = useNavigate();
 
   const handleEdit = (noteDetails) => {
     setOpenModal({ isShown: true, type: "edit", data: noteDetails });
+  };
+
+  const handleShowMessage = (message, type) => {
+    setShowMessage({
+      isShown: true,
+      message,
+      type,
+    });
+  };
+
+  const handleCloseMessage = () => {
+    setShowMessage({
+      isShown: false,
+      message: "",
+    });
   };
 
   useEffect(() => {
@@ -67,6 +89,23 @@ const Home = () => {
     getAllNotes();
   }, []);
 
+  const deleteNote = async (id) => {
+    try {
+      const response = await axiosInstance.delete(`/notes/${id}`);
+
+      if (!response.data.error) {
+        handleShowMessage("Note Deleted Successfully", "delete");
+        await getAllNotes();
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        "An unexpected error occurred. Please try again.";
+
+      console.error(errorMessage);
+    }
+  };
+
   return (
     <>
       <Navbar userInfo={userInfo} />
@@ -82,7 +121,7 @@ const Home = () => {
               tags={item.tags}
               isPinned={item.isPinned}
               onEdit={() => handleEdit(item)}
-              onDelete={() => {}}
+              onDelete={() => deleteNote(item._id)}
               onPinNote={() => {}}
             />
           ))}
@@ -120,8 +159,16 @@ const Home = () => {
             setOpenModal({ isShown: false, type: "add", data: null })
           }
           getAllNotes={getAllNotes}
+          handleShowMessage={handleShowMessage}
         />
       </Modal>
+
+      <Message
+        isShown={showMessage.isShown}
+        message={showMessage.message}
+        type={showMessage.type}
+        onClose={handleCloseMessage}
+      />
     </>
   );
 };
