@@ -2,7 +2,7 @@ import { Plus } from "lucide-react";
 import NoteCard from "../../components/Cards/NoteCard";
 import Navbar from "../../components/Navbar/Navbar";
 import AddNotes from "./AddNotes";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Modal from "react-modal";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
@@ -18,7 +18,9 @@ const Home = () => {
   const [allNotes, setAllNotes] = useState([]);
   const navigate = useNavigate();
 
-  let getAllNotes;
+  const handleEdit = (noteDetails) => {
+    setOpenModal({ isShown: true, type: "edit", data: noteDetails });
+  };
 
   useEffect(() => {
     const controller = new AbortController();
@@ -48,29 +50,21 @@ const Home = () => {
     };
   }, [navigate]);
 
-  useEffect(() => {
-    const controller = new AbortController();
+  const getAllNotes = useCallback(async () => {
+    try {
+      const response = await axiosInstance.get("/notes");
 
-    getAllNotes = async () => {
-      try {
-        const response = await axiosInstance.get("/notes", {
-          signal: controller.signal,
-        });
-
-        if (response.data?.notes) {
-          setAllNotes(response.data.notes);
-        }
-      } catch (error) {
-        if (error.name === "CanceledError") return;
-        console.error("Fetch error:", error);
+      if (response.data?.notes) {
+        setAllNotes(response.data.notes);
       }
-    };
+    } catch (error) {
+      if (error.name === "CanceledError") return;
+      console.error("Fetch error:", error);
+    }
+  }, []);
 
+  useEffect(() => {
     getAllNotes();
-
-    return () => {
-      controller.abort();
-    };
   }, []);
 
   return (
@@ -87,7 +81,7 @@ const Home = () => {
               content={item.content}
               tags={item.tags}
               isPinned={item.isPinned}
-              onEdit={() => {}}
+              onEdit={() => handleEdit(item)}
               onDelete={() => {}}
               onPinNote={() => {}}
             />
@@ -122,9 +116,9 @@ const Home = () => {
         <AddNotes
           type={openModal.type}
           noteData={openModal.data}
-          onClose={() => {
-            setOpenModal({ isShown: false, type: "add", data: null });
-          }}
+          onClose={() =>
+            setOpenModal({ isShown: false, type: "add", data: null })
+          }
           getAllNotes={getAllNotes}
         />
       </Modal>

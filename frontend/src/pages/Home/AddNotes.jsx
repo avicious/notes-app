@@ -4,9 +4,9 @@ import { X } from "lucide-react";
 import axiosInstance from "../../utils/axiosInstance";
 
 const AddNotes = ({ noteData, type, getAllNotes, onClose }) => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [tags, setTags] = useState([]);
+  const [title, setTitle] = useState(noteData?.title || "");
+  const [content, setContent] = useState(noteData?.content || "");
+  const [tags, setTags] = useState(noteData?.tags || []);
 
   const [error, setError] = useState(null);
 
@@ -31,7 +31,26 @@ const AddNotes = ({ noteData, type, getAllNotes, onClose }) => {
     }
   };
 
-  const editNote = async () => {};
+  const editNote = async () => {
+    try {
+      const response = await axiosInstance.patch(`/notes/${noteData?._id}`, {
+        title,
+        content,
+        tags,
+      });
+
+      if (response.data?.note) {
+        await getAllNotes();
+        onClose();
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        "An unexpected error occurred. Please try again.";
+
+      setError(errorMessage);
+    }
+  };
 
   const handleAddNote = () => {
     if (!title) {
@@ -101,7 +120,7 @@ const AddNotes = ({ noteData, type, getAllNotes, onClose }) => {
         className="btn-primary font-medium mt-5 p-3"
         onClick={handleAddNote}
       >
-        Add
+        {type === "edit" ? "Update" : "Add"}
       </button>
     </div>
   );
