@@ -377,27 +377,45 @@ app.get(
 
     try {
       const skip = (page - 1) * limit;
-      let dbQuery = { userId };
 
-      if (query) {
-        const safeQuery = query.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
-        dbQuery.$or = [
-          { title: { $regex: new RegExp(safeQuery, "i") } },
-          { content: { $regex: new RegExp(safeQuery, "i") } },
-        ];
-      }
-
-      const notes = await Note.find(dbQuery)
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit);
+      const notes = await Note.aggregate([
+        {
+          $search: {
+            index: "default",
+            compound: {
+              must: [
+                {
+                  autocomplete: {
+                    query: query,
+                    path: "title",
+                    fuzzy: { maxEdits: 1 },
+                  },
+                },
+              ],
+              filter: [
+                {
+                  equals: {
+                    value: userId,
+                    path: "userId",
+                  },
+                },
+              ],
+            },
+          },
+        },
+        {
+          $addFields: {
+            score: { $meta: "searchScore" },
+          },
+        },
+        { $skip: skip },
+        { $limit: limit },
+      ]);
 
       return res.json({
         error: false,
         notes,
-        page,
-        limit,
-        message: "Notes retrieved successfully",
+        message: "Search results retrieved",
       });
     } catch (error) {
       return res
