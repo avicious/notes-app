@@ -34,4 +34,9 @@ const noteSchema = new Schema(
   },
 );
 
+noteSchema.index(
+  { title: "text", content: "text" },
+  { weights: { title: 10, content: 5 } },
+);
+
 export default mongoose.model("Note", noteSchema);
