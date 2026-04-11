@@ -42,9 +42,9 @@ const deleteNoteSchema = Joi.object({
 
 // Search Notes
 const searchNoteSchema = Joi.object({
-  query: Joi.string().max(100).trim().messages({
+  query: Joi.string().trim().min(1).required().messages({
     "string.base": '"query" should be a type of text',
-    "string.max": '"query" should have a maximum length of {#limit}',
+    "string.min": '"query" should have a minimum length of {#limit}',
   }),
 
   page: Joi.number().integer().min(1).default(1),
