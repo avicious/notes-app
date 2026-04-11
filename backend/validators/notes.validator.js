@@ -40,4 +40,21 @@ const deleteNoteSchema = Joi.object({
   }),
 });
 
-export { getNotesSchema, noteSchema, editNoteSchema, deleteNoteSchema };
+// Search Notes
+const searchNoteSchema = Joi.object({
+  query: Joi.string().max(100).trim().messages({
+    "string.base": '"query" should be a type of text',
+    "string.max": '"query" should have a maximum length of {#limit}',
+  }),
+
+  page: Joi.number().integer().min(1).default(1),
+  limit: Joi.number().integer().min(1).max(100).default(10),
+});
+
+export {
+  getNotesSchema,
+  noteSchema,
+  editNoteSchema,
+  deleteNoteSchema,
+  searchNoteSchema,
+};

@@ -354,11 +354,12 @@ app.delete(
   },
 );
 
+// Search Notes
 const escapeRegex = (text) => {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 };
 
-app.get("/search-notes/", authenticateToken, async (req, res) => {
+app.get("/notes/search/", authenticateToken, async (req, res) => {
   const { userId } = req.user;
   const { query, page = 1, limit = 10 } = req.query;
 
