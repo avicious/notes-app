@@ -354,31 +354,61 @@ app.delete(
   },
 );
 
+const escapeRegex = (text) => {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};
+
 app.get("/search-notes/", authenticateToken, async (req, res) => {
   const { userId } = req.user;
-  const { query } = req.query;
+  const { query, page = 1, limit = 10 } = req.query;
 
-  if (!query) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Search query is required" });
+  if (!query || typeof query !== 'string') {
+    return res.status(400).json({ 
+      error: true, 
+      message: "A valid search query string is required" 
+    });
   }
 
+  const safeQuery = escapeRegex(query);
+
   try {
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+    const skip = (pageNumber - 1) * limitNumber;
+
     const matchingNotes = await Note.find({
       userId,
       $or: [
-        { title: { $regex: new RegExp(query, "i") } },
-        { content: { $regex: new RegExp(query, "i") } },
+        { title: { $regex: new RegExp(safeQuery, "i") } },
+        { content: { $regex: new RegExp(safeQuery, "i") } },
+      ],
+    })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limitNumber);
+
+    const totalMatchingNotes = await Note.countDocuments({
+      userId,
+      $or: [
+        { title: { $regex: new RegExp(safeQuery, "i") } },
+        { content: { $regex: new RegExp(safeQuery, "i") } },
       ],
     });
 
     return res.json({
       error: false,
       notes: matchingNotes,
-      message: "Notes matching the search query retrieved successfully",
+      pagination: {
+        total: totalMatchingNotes,
+        page: pageNumber,
+        limit: limitNumber,
+        totalPages: Math.ceil(totalMatchingNotes / limitNumber)
+      },
+      message: "Notes retrieved successfully",
     });
+
   } catch (error) {
+    console.error("Search notes error:", error);
     return res.status(500).json({
       error: true,
       message: "Internal Server Error",
