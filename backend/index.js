@@ -16,6 +16,7 @@ import {
   noteSchema,
   editNoteSchema,
   deleteNoteSchema,
+  searchNoteSchema,
 } from "./validators/notes.validator.js";
 
 const app = express();
@@ -359,63 +360,52 @@ const escapeRegex = (text) => {
   return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 };
 
-app.get("/notes/search/", authenticateToken, async (req, res) => {
-  const { userId } = req.user;
-  const { query, page = 1, limit = 10 } = req.query;
+app.get(
+  "/notes/search/",
+  authenticateToken,
+  validate(noteSearchSchema),
+  async (req, res) => {
+    const { userId } = req.user;
+    const { query, page, limit } = req.query;
 
-  if (!query || typeof query !== 'string') {
-    return res.status(400).json({ 
-      error: true, 
-      message: "A valid search query string is required" 
-    });
-  }
+    if (!query || typeof query !== "string") {
+      return res.status(400).json({
+        error: true,
+        message: "A valid search query string is required",
+      });
+    }
 
-  const safeQuery = escapeRegex(query);
+    try {
+      const skip = (page - 1) * limit;
+      let dbQuery = { userId };
 
-  try {
-    const pageNumber = parseInt(page, 10);
-    const limitNumber = parseInt(limit, 10);
-    const skip = (pageNumber - 1) * limitNumber;
+      if (query) {
+        const safeQuery = query.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+        dbQuery.$or = [
+          { title: { $regex: new RegExp(safeQuery, "i") } },
+          { content: { $regex: new RegExp(safeQuery, "i") } },
+        ];
+      }
 
-    const matchingNotes = await Note.find({
-      userId,
-      $or: [
-        { title: { $regex: new RegExp(safeQuery, "i") } },
-        { content: { $regex: new RegExp(safeQuery, "i") } },
-      ],
-    })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limitNumber);
+      const notes = await Note.find(dbQuery)
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
 
-    const totalMatchingNotes = await Note.countDocuments({
-      userId,
-      $or: [
-        { title: { $regex: new RegExp(safeQuery, "i") } },
-        { content: { $regex: new RegExp(safeQuery, "i") } },
-      ],
-    });
-
-    return res.json({
-      error: false,
-      notes: matchingNotes,
-      pagination: {
-        total: totalMatchingNotes,
-        page: pageNumber,
-        limit: limitNumber,
-        totalPages: Math.ceil(totalMatchingNotes / limitNumber)
-      },
-      message: "Notes retrieved successfully",
-    });
-
-  } catch (error) {
-    console.error("Search notes error:", error);
-    return res.status(500).json({
-      error: true,
-      message: "Internal Server Error",
-    });
-  }
-});
+      return res.json({
+        error: false,
+        notes,
+        page,
+        limit,
+        message: "Notes retrieved successfully",
+      });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ error: true, message: "Internal Server Error" });
+    }
+  },
+);
 
 app.listen(8000, () => console.log("Server running on port 8000"));
 
