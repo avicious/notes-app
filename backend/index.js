@@ -357,24 +357,18 @@ app.delete(
 
 // Search Notes
 app.get(
-  "/notes/search/",
+  "/notes/search",
   authenticateToken,
   validate(noteSearchSchema),
   async (req, res) => {
     const { userId } = req.user;
     const { query, page, limit } = req.query;
 
-    if (!query || typeof query !== "string") {
-      return res.status(400).json({
-        error: true,
-        message: "A valid search query string is required",
-      });
-    }
-
     try {
       const skip = (page - 1) * limit;
+      const userObjectId = new mongoose.Types.ObjectId(userId);
 
-      const notes = await Note.aggregate([
+      const results = await Note.aggregate([
         {
           $search: {
             index: "default",
@@ -391,7 +385,7 @@ app.get(
               filter: [
                 {
                   equals: {
-                    value: userId,
+                    value: userObjectId,
                     path: "userId",
                   },
                 },
@@ -400,23 +394,35 @@ app.get(
           },
         },
         {
-          $addFields: {
-            score: { $meta: "searchScore" },
+          $facet: {
+            metadata: [{ $count: "total" }],
+            data: [
+              { $addFields: { score: { $meta: "searchScore" } } },
+              { $skip: skip },
+              { $limit: limit },
+            ],
           },
         },
-        { $skip: skip },
-        { $limit: limit },
       ]);
+
+      const notes = results[0].data;
+      const total = results[0].metadata[0]?.total || 0;
 
       return res.json({
         error: false,
         notes,
+        pagination: {
+          total,
+          page,
+          totalPages: Math.ceil(total / limit),
+        },
         message: "Search results retrieved",
       });
     } catch (error) {
-      return res
-        .status(500)
-        .json({ error: true, message: "Internal Server Error" });
+      return res.status(500).json({
+        error: true,
+        message: "Internal Server Error",
+      });
     }
   },
 );
