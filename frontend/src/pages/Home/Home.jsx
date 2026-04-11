@@ -24,6 +24,9 @@ const Home = () => {
 
   const [userInfo, setUserInfo] = useState(null);
   const [allNotes, setAllNotes] = useState([]);
+
+  const [isSearch, setIsSearch] = useState(false);
+
   const navigate = useNavigate();
 
   const handleEdit = (noteDetails) => {
@@ -107,9 +110,28 @@ const Home = () => {
     }
   };
 
+  const onSearchNote = async (query) => {
+    try {
+      const response = await axiosInstance.get("/notes/search/", {
+        params: { query },
+      });
+
+      if (response.data?.notes) {
+        setIsSearch(true);
+        setAllNotes(response.data.notes);
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        "An unexpected error occurred. Please try again.";
+
+      console.error(errorMessage);
+    }
+  };
+
   return (
     <>
-      <Navbar userInfo={userInfo} />
+      <Navbar userInfo={userInfo} onSearchNote={onSearchNote} />
 
       <div className="app-container">
         {allNotes.length > 0 ? (
