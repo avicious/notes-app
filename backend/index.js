@@ -356,10 +356,6 @@ app.delete(
 );
 
 // Search Notes
-const escapeRegex = (text) => {
-  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
-};
-
 app.get(
   "/notes/search/",
   authenticateToken,
@@ -387,7 +383,7 @@ app.get(
                 {
                   autocomplete: {
                     query: query,
-                    path: "title",
+                    path: ["title", "content"],
                     fuzzy: { maxEdits: 1 },
                   },
                 },
