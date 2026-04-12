@@ -129,6 +129,25 @@ const Home = () => {
     }
   };
 
+  const updateIsPinned = async (noteData) => {
+    try {
+      const response = await axiosInstance.patch(`/notes/${noteData._id}`, {
+        isPinned: !noteData.isPinned,
+      });
+
+      if (response.data?.note) {
+        handleShowMessage("Note Pinned Successfully");
+        await getAllNotes();
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        "An unexpected error occurred. Please try again.";
+
+      setError(errorMessage);
+    }
+  };
+
   const handleClearSearch = () => {
     setIsSearch(false);
     getAllNotes();
@@ -155,7 +174,7 @@ const Home = () => {
                 isPinned={item.isPinned}
                 onEdit={() => handleEdit(item)}
                 onDelete={() => deleteNote(item._id)}
-                onPinNote={() => {}}
+                onPinNote={() => updateIsPinned(item)}
               />
             ))}
           </div>
