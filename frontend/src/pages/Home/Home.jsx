@@ -160,7 +160,7 @@ const Home = () => {
             ))}
           </div>
         ) : (
-          <EmptyCard />
+          <EmptyCard isSearch={isSearch} />
         )}
       </div>
 
