@@ -359,10 +359,10 @@ app.delete(
 app.get(
   "/notes/search",
   authenticateToken,
-  validate(noteSearchSchema),
+  validate(searchNoteSchema),
   async (req, res) => {
     const { userId } = req.user;
-    const { query, page, limit } = req.query;
+    const { query, page = 1, limit = 10 } = req.query;
 
     try {
       const skip = (page - 1) * limit;
@@ -375,10 +375,24 @@ app.get(
             compound: {
               must: [
                 {
-                  autocomplete: {
-                    query: query,
-                    path: ["title", "content"],
-                    fuzzy: { maxEdits: 1 },
+                  compound: {
+                    should: [
+                      {
+                        autocomplete: {
+                          query: query,
+                          path: "title",
+                          fuzzy: { maxEdits: 1 },
+                        },
+                      },
+                      {
+                        autocomplete: {
+                          query: query,
+                          path: "content",
+                          fuzzy: { maxEdits: 1 },
+                        },
+                      },
+                    ],
+                    minimumShouldMatch: 1,
                   },
                 },
               ],
@@ -419,6 +433,7 @@ app.get(
         message: "Search results retrieved",
       });
     } catch (error) {
+      console.error(error);
       return res.status(500).json({
         error: true,
         message: "Internal Server Error",

@@ -4,17 +4,22 @@ import ProfileInfo from "../Cards/ProfileInfo";
 import SearchBar from "../SearchBar/SearchBar";
 import { performLogout } from "../../utils/axiosInstance";
 
-const Navbar = ({ userInfo, onSearchNote }) => {
+const Navbar = ({ userInfo, onSearchNote, handleClearSearch }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const onLogout = () => {
     performLogout();
   };
 
-  const handleSearch = () => {};
+  const handleSearch = () => {
+    if (searchQuery) {
+      onSearchNote(searchQuery);
+    }
+  };
 
   const onClearSearch = () => {
     setSearchQuery("");
+    handleClearSearch();
   };
 
   return (

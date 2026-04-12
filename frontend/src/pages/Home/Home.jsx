@@ -112,7 +112,7 @@ const Home = () => {
 
   const onSearchNote = async (query) => {
     try {
-      const response = await axiosInstance.get("/notes/search/", {
+      const response = await axiosInstance.get("/notes/search", {
         params: { query },
       });
 
@@ -129,9 +129,18 @@ const Home = () => {
     }
   };
 
+  const handleClearSearch = () => {
+    setIsSearch(false);
+    getAllNotes();
+  };
+
   return (
     <>
-      <Navbar userInfo={userInfo} onSearchNote={onSearchNote} />
+      <Navbar
+        userInfo={userInfo}
+        onSearchNote={onSearchNote}
+        handleClearSearch={handleClearSearch}
+      />
 
       <div className="app-container">
         {allNotes.length > 0 ? (
