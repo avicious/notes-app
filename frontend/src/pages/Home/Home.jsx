@@ -184,7 +184,7 @@ const Home = () => {
       </div>
 
       <button
-        className="w-16 h-16 flex items-center justify-center rounded-2xl bg-accent hover:bg-accent/80 absolute right-10 bottom-10 cursor-pointer"
+        className="w-16 h-16 flex items-center justify-center rounded-2xl bg-accent hover:bg-slate-800 absolute right-10 bottom-10 cursor-pointer"
         onClick={() => {
           setOpenModal({
             isShown: true,
