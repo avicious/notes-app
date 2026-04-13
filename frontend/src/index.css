@@ -28,7 +28,7 @@
   }
 
   .btn-primary {
-    @apply w-full text-sm bg-accent text-ghost p-2 rounded my-1 hover:bg-accent/80 cursor-pointer;
+    @apply w-full text-sm bg-accent text-ghost p-2 rounded my-1 hover:bg-slate-800 cursor-pointer;
   }
 
   .app-container {

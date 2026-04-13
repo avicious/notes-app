@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Home, Login, SignUp, GetStarted } from "./pages";
 import { Navigate } from "react-router-dom";
+import { Home, Login, SignUp, GetStarted } from "./pages";
 
 const ProtectedRoute = ({ isAuthenticated, children }) => {
   if (!isAuthenticated) {
