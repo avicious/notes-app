@@ -3,9 +3,9 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ghost: #fafafa;
-  --color-carbon: #1a1a1a;
-  --color-accent: #2563eb;
+  --color-ghost: oklch(98.4% 0.003 247.858);
+  --color-carbon: oklch(44.6% 0.043 257.281);
+  --color-accent: oklch(20.8% 0.042 265.755);
 
   --font-ubuntu: "Ubuntu", sans-serif;
 }
