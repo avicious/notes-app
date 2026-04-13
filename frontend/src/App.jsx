@@ -1,12 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Home, Login, SignUp } from "./pages";
+import { Home, Login, SignUp, GetStarted } from "./pages";
 
 const routes = (
   <Router>
     <Routes>
-      <Route path="/dashboard" exact element={<Home />} />
-      <Route path="/login" exact element={<Login />} />
-      <Route path="/sign-up" exact element={<SignUp />} />
+      <Route path="/" element={<GetStarted />} />
+      <Route path="/dashboard" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/sign-up" element={<SignUp />} />
     </Routes>
   </Router>
 );
