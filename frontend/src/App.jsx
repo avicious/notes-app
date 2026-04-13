@@ -1,19 +1,65 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Home, Login, SignUp, GetStarted } from "./pages";
+import { Navigate } from "react-router-dom";
 
-const routes = (
-  <Router>
-    <Routes>
-      <Route path="/" element={<GetStarted />} />
-      <Route path="/dashboard" element={<Home />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/sign-up" element={<SignUp />} />
-    </Routes>
-  </Router>
-);
+const ProtectedRoute = ({ isAuthenticated, children }) => {
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+};
+
+const PublicRoute = ({ isAuthenticated, children }) => {
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+  return children;
+};
 
 const App = () => {
-  return <div>{routes}</div>;
+  const isAuthenticated = false;
+
+  return (
+    <Router>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <PublicRoute isAuthenticated={isAuthenticated}>
+              <GetStarted />
+            </PublicRoute>
+          }
+        />
+
+        <Route
+          path="/login"
+          element={
+            <PublicRoute isAuthenticated={isAuthenticated}>
+              <Login />
+            </PublicRoute>
+          }
+        />
+
+        <Route
+          path="/sign-up"
+          element={
+            <PublicRoute isAuthenticated={isAuthenticated}>
+              <SignUp />
+            </PublicRoute>
+          }
+        />
+
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </Router>
+  );
 };
 
 export default App;
