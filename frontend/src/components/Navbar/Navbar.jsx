@@ -24,7 +24,9 @@ const Navbar = ({ userInfo, onSearchNote, handleClearSearch }) => {
 
   return (
     <nav className="bg-ghost flex items-center justify-between px-6 py-2 drop-shadow">
-      <h2 className="text-3xl text-accent font-extrabold tracking-tight py-2 cursor-default">Vertex</h2>
+      <h2 className="text-3xl text-accent font-extrabold tracking-tight py-2 cursor-default select-none">
+        Vertex
+      </h2>
 
       {userInfo && (
         <>
