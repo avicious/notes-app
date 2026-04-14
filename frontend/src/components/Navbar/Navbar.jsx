@@ -30,12 +30,14 @@ const Navbar = ({ userInfo, onSearchNote, handleClearSearch }) => {
 
       {userInfo && (
         <>
-          <SearchBar
-            value={searchQuery}
-            onChange={({ target }) => setSearchQuery(target.value)}
-            handleSearch={handleSearch}
-            onClearSearch={onClearSearch}
-          />
+          <div className="hidden sm:block">
+            <SearchBar
+              value={searchQuery}
+              onChange={({ target }) => setSearchQuery(target.value)}
+              handleSearch={handleSearch}
+              onClearSearch={onClearSearch}
+            />
+          </div>
 
           <ProfileInfo userInfo={userInfo} onLogout={onLogout} />
         </>

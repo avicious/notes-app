@@ -7,7 +7,7 @@ const ProfileInfo = ({ userInfo, onLogout }) => {
         {getInitials(userInfo?.fullName)}
       </div>
 
-      <div>
+      <div className="hidden sm:block">
         <p className="text-sm font-medium">{userInfo?.fullName}</p>
         <button
           className="text-sm text-carbon underline cursor-pointer hover:decoration-dashed"

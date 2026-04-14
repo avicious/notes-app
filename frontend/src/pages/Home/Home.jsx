@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import Message from "../../components/Message/Message";
 import EmptyCard from "../../components/EmptyCard/EmptyCard";
+import SearchBar from "../../components/SearchBar/SearchBar";
 
 const Home = () => {
   const [openModal, setOpenModal] = useState({
@@ -184,7 +185,7 @@ const Home = () => {
       </div>
 
       <button
-        className="w-16 h-16 flex items-center justify-center rounded-2xl bg-accent hover:bg-slate-800 absolute right-10 bottom-10 cursor-pointer"
+        className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center rounded-full bg-accent hover:bg-slate-800 absolute right-5 bottom-5 sm:right-10 sm:bottom-10 cursor-pointer"
         onClick={() => {
           setOpenModal({
             isShown: true,
