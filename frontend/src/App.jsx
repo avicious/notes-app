@@ -17,7 +17,7 @@ const PublicRoute = ({ isAuthenticated, children }) => {
 };
 
 const App = () => {
-  const isAuthenticated = false;
+  const isAuthenticated = true;
 
   return (
     <Router>
