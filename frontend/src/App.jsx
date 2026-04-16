@@ -12,7 +12,7 @@ const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
 
   if (loading) return <div>Loading...</div>;
-  return isAuthenticated ? children : <Navigate to="/login" replace />;
+  return isAuthenticated ? children : <Navigate to="/auth/login" replace />;
 };
 
 const PublicRoute = ({ children }) => {
@@ -22,76 +22,52 @@ const PublicRoute = ({ children }) => {
   return !isAuthenticated ? children : <Navigate to="/dashboard" replace />;
 };
 
-const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await fetch("/api/auth/verify", {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-        });
-
-        if (response.ok) {
-          setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
-        }
-      } catch (error) {
-        console.error("Auth check failed:", error);
-        setIsAuthenticated(false);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkAuth();
-  }, []);
-
+const AppContent = () => {
   return (
-    <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <PublicRoute isAuthenticated={isAuthenticated}>
-              <GetStarted />
-            </PublicRoute>
-          }
-        />
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <PublicRoute>
+            <GetStarted />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/login"
+        element={
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/sign-up"
+        element={
+          <PublicRoute>
+            <SignUp />
+          </PublicRoute>
+        }
+      />
 
-        <Route
-          path="/login"
-          element={
-            <PublicRoute isAuthenticated={isAuthenticated}>
-              <Login />
-            </PublicRoute>
-          }
-        />
-
-        <Route
-          path="/sign-up"
-          element={
-            <PublicRoute isAuthenticated={isAuthenticated}>
-              <SignUp />
-            </PublicRoute>
-          }
-        />
-
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute isAuthenticated={isAuthenticated}>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </Router>
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   );
+};
+
+const App = () => {
+  <AuthProvider>
+    <Router>
+      <AppContent />
+    </Router>
+  </AuthProvider>;
 };
 
 export default App;
