@@ -12,9 +12,12 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axiosInstance.get("/get-user");
 
-      if (response.data.success) {
+      if (response.data && !response.data.error) {
         setUser(response.data.user);
         setIsAuthenticated(true);
+      } else {
+        setUser(null);
+        setIsAuthenticated(false);
       }
     } catch (error) {
       setUser(null);
