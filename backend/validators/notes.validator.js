@@ -1,12 +1,12 @@
 import Joi from "joi";
 
-// Get All Notes
+// JOI Schema for All Notes
 const getNotesSchema = Joi.object({
   page: Joi.number().integer().min(1).default(1),
   limit: Joi.number().integer().min(1).max(100).default(20),
 });
 
-// Add Note
+// JOI Schema for Add Note
 const noteSchema = Joi.object({
   title: Joi.string().trim().min(1).max(100).required().messages({
     "string.empty": '"title" cannot be empty',
@@ -19,7 +19,7 @@ const noteSchema = Joi.object({
   tags: Joi.array().items(Joi.string().trim()).optional().default([]),
 });
 
-// Edit Note
+// JOI Schema for Edit Note
 const editNoteSchema = Joi.object({
   title: Joi.string().trim().min(1).max(100).optional(),
   content: Joi.string().trim().min(1).optional(),
@@ -32,7 +32,7 @@ const editNoteSchema = Joi.object({
       "You must provide at least one field to update (title, content, tags, or isPinned)",
   });
 
-// Delete Note
+// JOI Schema for Delete Note
 const deleteNoteSchema = Joi.object({
   noteId: Joi.string().hex().length(24).required().messages({
     "string.hex": "Invalid Note ID format",
@@ -40,7 +40,7 @@ const deleteNoteSchema = Joi.object({
   }),
 });
 
-// Search Notes
+// JOI Schema for Notes Search
 const searchNoteSchema = Joi.object({
   query: Joi.string().trim().min(1).required().messages({
     "string.base": '"query" should be a type of text',
