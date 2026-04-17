@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 
 const Schema = mongoose.Schema;
 
+// Schema for users: fullName, email, password & timestamps
 const userSchema = new Schema(
   {
     fullName: {
@@ -25,10 +26,11 @@ const userSchema = new Schema(
     },
   },
   {
-    timestamps: true,
+    timestamps: true, // This automatically adds 'createdAt' and 'updatedAt' fields.
   },
 );
 
+// Pre-save function to hash and salt password using bcrypt
 userSchema.pre("save", async function () {
   const user = this;
 
@@ -40,6 +42,7 @@ userSchema.pre("save", async function () {
   user.password = hash;
 });
 
+// Method to compare password using bcrypt
 userSchema.methods.comparePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
