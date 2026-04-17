@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
+// Schema for notes: title, content, tags, isPinned, userId & timestamps
 const noteSchema = new Schema(
   {
     title: {
@@ -30,7 +31,7 @@ const noteSchema = new Schema(
     },
   },
   {
-    timestamps: true,
+    timestamps: true, // This automatically adds 'createdAt' and 'updatedAt' fields.
   },
 );
 
