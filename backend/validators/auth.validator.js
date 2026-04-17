@@ -1,5 +1,6 @@
 import Joi from "joi";
 
+// JOI Schema for Register Route
 const registerSchema = Joi.object({
   fullName: Joi.string().required().messages({
     "string.empty": "Full Name is required",
@@ -14,6 +15,7 @@ const registerSchema = Joi.object({
   }),
 });
 
+// JOI Schema for Login Route
 const loginSchema = Joi.object({
   email: Joi.string().email().required().messages({
     "string.email": "Invalid email format",
