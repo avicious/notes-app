@@ -6,10 +6,14 @@ import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
 import authenticateToken from "./utilities.js";
 
+// Models
 import User from "./models/User.js";
 import Note from "./models/Note.js";
 
+// JOI Validator
 import validate from "./middlewares/validate.js";
+
+// JOI Schemas
 import { registerSchema, loginSchema } from "./validators/auth.validator.js";
 import {
   getNotesSchema,
@@ -19,25 +23,28 @@ import {
   searchNoteSchema,
 } from "./validators/notes.validator.js";
 
+// Initialization
 const app = express();
 
-// Cookie Parser
-app.use(cookieParser());
-
-// Middleware
-app.use(express.json());
+// CORS Middleware (for Security)
 app.use(
   cors({
     origin:
       process.env.NODE_ENV === "production"
         ? "https://notes-app-domain.com"
         : "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    credentials: true,
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    credentials: true, //For HTTP-only cookies
   }),
 );
 
-// Database
+// Cookie Parser (for Auth)
+app.use(cookieParser());
+
+// JSON Middleware (for Translation)
+app.use(express.json());
+
+// Connecting MongoDB
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
@@ -48,13 +55,11 @@ const connectDB = async () => {
   }
 };
 
-connectDB();
-
-// Routes
 // Register
 app.post("/auth/register", validate(registerSchema), async (req, res) => {
   const { fullName, email, password } = req.body;
 
+  // Check if user with a given email already exists
   try {
     const isUser = await User.findOne({ email });
     if (isUser) {
@@ -64,15 +69,18 @@ app.post("/auth/register", validate(registerSchema), async (req, res) => {
       });
     }
 
+    // Add New User
     const newUser = new User({ fullName, email, password });
     await newUser.save();
 
+    // Assign Access Token
     const accessToken = jwt.sign(
       { userId: newUser._id },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "72h" },
     );
 
+    // Return Http only cookie (for Auth)
     return res
       .cookie("__Host-accessToken", accessToken, {
         httpOnly: true,
@@ -103,6 +111,7 @@ app.post("/auth/register", validate(registerSchema), async (req, res) => {
 app.post("/auth/login", validate(loginSchema), async (req, res) => {
   const { email, password } = req.body;
 
+  // Check if User with a given email exists
   try {
     const userInfo = await User.findOne({ email });
 
@@ -112,6 +121,7 @@ app.post("/auth/login", validate(loginSchema), async (req, res) => {
         .json({ error: true, message: "Invalid credentials" });
     }
 
+    // Compare Password using bcrypt
     const isPasswordValid = await userInfo.comparePassword(password);
 
     if (!isPasswordValid) {
@@ -120,12 +130,14 @@ app.post("/auth/login", validate(loginSchema), async (req, res) => {
         .json({ error: true, message: "Invalid credentials" });
     }
 
+    // Assign Access Token
     const accessToken = jwt.sign(
       { userId: userInfo._id },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "72h" },
     );
 
+    // Return Http only cookie (for Auth)
     return res
       .cookie("__Host-accessToken", accessToken, {
         httpOnly: true,
@@ -154,6 +166,7 @@ app.post("/auth/login", validate(loginSchema), async (req, res) => {
 
 // Logout
 app.post("/auth/logout", (req, res) => {
+  // Clear Http only cookie
   try {
     res.clearCookie("__Host-accessToken", {
       httpOnly: true,
@@ -178,6 +191,7 @@ app.post("/auth/logout", (req, res) => {
 app.get("/get-user", authenticateToken, async (req, res) => {
   const { userId } = req.user;
 
+  // Find User and return data excluding password
   try {
     const user = await User.findById(userId).select("-password -__v");
 
@@ -202,7 +216,8 @@ app.get("/get-user", authenticateToken, async (req, res) => {
   }
 });
 
-// All Notes
+// Need to implement hard limit for notes.
+// Fetch All Notes
 app.get(
   "/notes",
   authenticateToken,
@@ -442,7 +457,19 @@ app.get(
     }
   },
 );
+// Need to implement hard limit for notes.
 
-app.listen(8000, () => console.log("Server running on port 8000"));
+const startServer = async () => {
+  try {
+    await connectDB();
+    app.listen(8000, () => {
+      console.log("Server running");
+    });
+  } catch (error) {
+    console.log("Failed to start server:", error);
+  }
+};
+
+startServer();
 
 export default app;
