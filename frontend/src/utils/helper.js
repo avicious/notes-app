@@ -1,8 +1,10 @@
+// Function to validate email using a regex
 export const validateEmail = (email) => {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return regex.test(email);
 };
 
+// Function to validate password
 export const validatePassword = (password) => {
   const errors = [];
 
@@ -38,6 +40,7 @@ export const validatePassword = (password) => {
   };
 };
 
+// Function to get initials from a name
 export const getInitials = (name) => {
   if (!name) return "";
 
