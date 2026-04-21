@@ -1,7 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Home, Login, SignUp, GetStarted } from "./pages";
-import ProtectedRoute from "./utils/ProtectedRoute";
-import { AuthProvider } from "./utils/AuthContext";
 
 const router = createBrowserRouter([
   {
@@ -10,11 +8,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: (
-      <ProtectedRoute>
-        <Home />
-      </ProtectedRoute>
-    ),
+    element: <Home />,
   },
   {
     path: "/login",
@@ -27,11 +21,7 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
-  return (
-    <AuthProvider>
-      <RouterProvider router={router} />;
-    </AuthProvider>
-  );
+  return <RouterProvider router={router} />;
 };
 
 export default App;
