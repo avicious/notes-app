@@ -11,6 +11,7 @@ const NoteCard = ({
   onDelete,
   onPinNote,
 }) => {
+  // Date formatted using date fns
   const formatedDate = format(new Date(date), "do MMMM yyyy");
   return (
     <div className="border border-gray-200 rounded p-4 bg-ghost shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-xl hover:scale-[1.02]">
