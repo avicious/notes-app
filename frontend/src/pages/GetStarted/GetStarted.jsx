@@ -6,9 +6,13 @@ const GetStarted = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-ghost px-6 font-sans">
       <div className="max-w-2xl text-center">
-        <span className="inline-block px-3 py-1 mb-6 text-xs font-semibold tracking-wider text-carbon uppercase bg-slate-200 rounded-full">
+        <span className="inline-block px-3 py-1 mb-8 text-xs font-semibold tracking-wider text-carbon uppercase bg-slate-200 rounded-full">
           Simple & Focused
         </span>
+
+        <p className="text-sm md:text-base font-bold tracking-[0.3em] text-carbon uppercase mb-3">
+          Vertex
+        </p>
 
         <h1 className="text-5xl md:text-7xl font-extrabold text-accent tracking-tight mb-6">
           Write it down.
