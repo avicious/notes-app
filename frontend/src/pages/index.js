@@ -1,6 +1,6 @@
-import Home from "./Home/Home";
-import Login from "./Login/Login";
-import SignUp from "./SignUp/SignUp";
-import GetStarted from "./GetStarted/GetStarted";
+import Home from "./Home";
+import Login from "./Login";
+import SignUp from "./SignUp";
+import GetStarted from "./GetStarted";
 
 export { Home, Login, SignUp, GetStarted };

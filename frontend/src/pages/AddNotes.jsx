@@ -1,7 +1,7 @@
 import { useState } from "react";
-import TagInput from "../../components/Input/TagInput";
+import TagInput from "../components/Input/TagInput";
 import { X } from "lucide-react";
-import axiosInstance from "../../utils/axiosInstance";
+import axiosInstance from "../utils/axiosInstance";
 
 const AddNotes = ({
   noteData,
