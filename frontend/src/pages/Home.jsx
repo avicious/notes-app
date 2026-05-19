@@ -1,23 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
-
+import toast from "react-hot-toast";
 import { Plus } from "lucide-react";
-import { Navbar, NoteCard, Message, EmptyCard, SearchBar } from "../components";
+import { Navbar, NoteCard, EmptyCard, SearchBar } from "../components";
 import AddNotes from "./AddNotes";
 import Modal from "react-modal";
+import { Toaster } from "react-hot-toast";
 
 const Home = () => {
   const [openModal, setOpenModal] = useState({
     isShown: false,
     type: "add",
     data: null,
-  });
-
-  const [showMessage, setShowMessage] = useState({
-    isShown: false,
-    message: "",
-    type: "add",
   });
 
   const [userInfo, setUserInfo] = useState(null);
@@ -29,21 +24,6 @@ const Home = () => {
 
   const handleEdit = (noteDetails) => {
     setOpenModal({ isShown: true, type: "edit", data: noteDetails });
-  };
-
-  const handleShowMessage = (message, type) => {
-    setShowMessage({
-      isShown: true,
-      message,
-      type,
-    });
-  };
-
-  const handleCloseMessage = () => {
-    setShowMessage({
-      isShown: false,
-      message: "",
-    });
   };
 
   useEffect(() => {
@@ -96,7 +76,7 @@ const Home = () => {
       const response = await axiosInstance.delete(`/notes/${id}`);
 
       if (!response.data.error) {
-        handleShowMessage("Note Deleted Successfully", "delete");
+        toast.error("Note Deleted Successfully");
         await getAllNotes();
       }
     } catch (error) {
@@ -134,7 +114,7 @@ const Home = () => {
       });
 
       if (response.data?.note) {
-        handleShowMessage("Note Pinned Successfully");
+        toast.success("Note Updated Successfully");
         await getAllNotes();
       }
     } catch (error) {
@@ -158,7 +138,7 @@ const Home = () => {
         onSearchNote={onSearchNote}
         handleClearSearch={handleClearSearch}
       />
-
+      <Toaster />
       <div className="app-container">
         {allNotes.length > 0 ? (
           <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-4 mt-8">
@@ -212,16 +192,8 @@ const Home = () => {
             setOpenModal({ isShown: false, type: "add", data: null })
           }
           getAllNotes={getAllNotes}
-          handleShowMessage={handleShowMessage}
         />
       </Modal>
-
-      <Message
-        isShown={showMessage.isShown}
-        message={showMessage.message}
-        type={showMessage.type}
-        onClose={handleCloseMessage}
-      />
     </>
   );
 };

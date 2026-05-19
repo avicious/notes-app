@@ -2,13 +2,13 @@ import { useState } from "react";
 import TagInput from "../components/TagInput";
 import { X } from "lucide-react";
 import axiosInstance from "../utils/axiosInstance";
+import toast from "react-hot-toast";
 
 const AddNotes = ({
   noteData,
   type,
   getAllNotes,
   onClose,
-  handleShowMessage,
 }) => {
   const [title, setTitle] = useState(noteData?.title || "");
   const [content, setContent] = useState(noteData?.content || "");
@@ -25,7 +25,7 @@ const AddNotes = ({
       });
 
       if (response.data?.note) {
-        handleShowMessage("Note Added Successfully", "add");
+        toast.success("Note Added Successfully");
         await getAllNotes();
         onClose();
       }
@@ -47,7 +47,7 @@ const AddNotes = ({
       });
 
       if (response.data?.note) {
-        handleShowMessage("Note Updated Successfully", "add");
+        toast.success("Note Updated Successfully");
         await getAllNotes();
         onClose();
       }
