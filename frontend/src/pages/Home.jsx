@@ -203,7 +203,7 @@ const Home = () => {
           },
         }}
         contentLabel=""
-        className="w-[40%] bg-ghost rounded-md mx-auto mt-14 p-5 overflow-scroll"
+        className="w-[80%] md:w-[60%] lg:w-[40%] bg-ghost rounded-md mx-auto mt-14 p-5 overflow-scroll"
       >
         <AddNotes
           type={openModal.type}

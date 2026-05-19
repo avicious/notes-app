@@ -6,18 +6,18 @@ const router = createBrowserRouter([
     path: "/",
     element: <GetStarted />,
   },
-  // {
-  //   path: "/dashboard",
-  //   element: <Home />,
-  // },
-  // {
-  //   path: "/login",
-  //   element: <Login />,
-  // },
-  // {
-  //   path: "/sign-up",
-  //   element: <SignUp />,
-  // },
+  {
+    path: "/dashboard",
+    element: <Home />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/sign-up",
+    element: <SignUp />,
+  },
 ]);
 
 const App = () => {

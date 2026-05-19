@@ -14,7 +14,7 @@ const NoteCard = ({
   // Date formatted using date fns
   const formatedDate = format(new Date(date), "do MMMM yyyy");
   return (
-    <div className="border border-gray-200 rounded p-4 bg-ghost shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-xl hover:scale-[1.02]">
+    <div className="flex flex-col border border-gray-200 rounded p-4 bg-ghost shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-xl hover:scale-[1.02] cursor-pointer">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-sm font-medium">{title}</h3>
@@ -27,9 +27,9 @@ const NoteCard = ({
         />
       </div>
 
-      <p className="text-xs text-slate-600 mt-2">{content?.slice(0, 60)}</p>
+      <p className="text-xs text-slate-600 mt-2">{content}</p>
 
-      <div className="flex items-center justify-between mt-2">
+      <div className="flex items-center justify-between mt-auto">
         <div className="text-xs text-slate-500">
           {tags.map((item) => `#${item} `)}
         </div>
