@@ -1,5 +1,5 @@
-import addNote from "../../assets/add-note.png";
-import noNote from "../../assets/no-note.png";
+import addNote from "../assets/add-note.png";
+import noNote from "../assets/no-note.png";
 
 const EmptyCard = ({ isSearch }) => {
   return (

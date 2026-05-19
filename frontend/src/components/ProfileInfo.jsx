@@ -1,4 +1,4 @@
-import { getInitials } from "../../utils/helper";
+import { getInitials } from "../utils/helper";
 
 const ProfileInfo = ({ userInfo, onLogout }) => {
   return (

@@ -1,14 +1,11 @@
-import { Plus } from "lucide-react";
-import NoteCard from "../../components/Cards/NoteCard";
-import Navbar from "../../components/Navbar/Navbar";
-import AddNotes from "./AddNotes";
 import { useCallback, useEffect, useState } from "react";
-import Modal from "react-modal";
 import { useNavigate } from "react-router-dom";
-import axiosInstance from "../../utils/axiosInstance";
-import Message from "../../components/Message/Message";
-import EmptyCard from "../../components/EmptyCard/EmptyCard";
-import SearchBar from "../../components/SearchBar/SearchBar";
+import axiosInstance from "../utils/axiosInstance";
+
+import { Plus } from "lucide-react";
+import { Navbar, NoteCard, Message, EmptyCard, SearchBar } from "../components";
+import AddNotes from "./AddNotes";
+import Modal from "react-modal";
 
 const Home = () => {
   const [openModal, setOpenModal] = useState({

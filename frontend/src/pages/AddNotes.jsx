@@ -1,5 +1,5 @@
 import { useState } from "react";
-import TagInput from "../components/Input/TagInput";
+import TagInput from "../components/TagInput";
 import { X } from "lucide-react";
 import axiosInstance from "../utils/axiosInstance";
 

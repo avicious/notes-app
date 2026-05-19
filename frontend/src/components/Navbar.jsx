@@ -1,8 +1,8 @@
 import { useState } from "react";
 
-import ProfileInfo from "../Cards/ProfileInfo";
-import SearchBar from "../SearchBar/SearchBar";
-import { performLogout } from "../../utils/axiosInstance";
+import ProfileInfo from "./ProfileInfo";
+import SearchBar from "./SearchBar";
+import { performLogout } from "../utils/axiosInstance";
 
 const Navbar = ({ userInfo, onSearchNote, handleClearSearch }) => {
   const [searchQuery, setSearchQuery] = useState("");
