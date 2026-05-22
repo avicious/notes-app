@@ -216,7 +216,6 @@ app.get("/get-user", authenticateToken, async (req, res) => {
   }
 });
 
-// Need to implement hard limit for notes.
 // Fetch All Notes
 app.get(
   "/notes",
@@ -457,7 +456,6 @@ app.get(
     }
   },
 );
-// Need to implement hard limit for notes.
 
 const startServer = async () => {
   try {
