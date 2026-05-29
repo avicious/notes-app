@@ -1,9 +1,8 @@
 import axios from "axios";
-import { BASE_URL } from "./constants";
 
 // Axios instance for API integration
 const axiosInstance = axios.create({
-  baseURL: BASE_URL,
+  baseURL: "http://localhost:8000",
   timeout: 10000,
   withCredentials: true,
   headers: {
@@ -14,7 +13,11 @@ const axiosInstance = axios.create({
 // Function to perform logout
 export const performLogout = async (navigate) => {
   try {
-    await axios.post(`${BASE_URL}/auth/logout`, {}, { withCredentials: true });
+    await axios.post(
+      `${"http://localhost:8000"}/auth/logout`,
+      {},
+      { withCredentials: true },
+    );
   } catch (error) {
     console.error("Server logout failed:", error);
   } finally {
