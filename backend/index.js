@@ -88,7 +88,7 @@ app.post("/auth/register", validate(registerSchema), async (req, res) => {
       .cookie("__Host-accessToken", accessToken, {
         httpOnly: true,
         secure: true,
-        sameSite: "Lax",
+        sameSite: "none",
         maxAge: 72 * 60 * 60 * 1000,
         path: "/",
       })
@@ -145,7 +145,7 @@ app.post("/auth/login", validate(loginSchema), async (req, res) => {
       .cookie("__Host-accessToken", accessToken, {
         httpOnly: true,
         secure: true,
-        sameSite: "Lax",
+        sameSite: "none",
         maxAge: 72 * 60 * 60 * 1000,
         path: "/",
       })
@@ -174,7 +174,7 @@ app.post("/auth/logout", (req, res) => {
     res.clearCookie("__Host-accessToken", {
       httpOnly: true,
       secure: true,
-      sameSite: "Lax",
+      sameSite: "none",
       path: "/",
     });
 
