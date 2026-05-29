@@ -1,10 +1,8 @@
 import axios from "axios";
 
-const apiUrl = import.meta.env.VITE_API_URL;
-
 // Axios instance for API integration
 const axiosInstance = axios.create({
-  baseURL: apiUrl,
+  baseURL: "",
   timeout: 10000,
   withCredentials: true,
   headers: {
@@ -16,7 +14,7 @@ const axiosInstance = axios.create({
 export const performLogout = async (navigate) => {
   try {
     await axios.post(
-      `${apiUrl}/auth/logout`,
+      `/auth/logout`,
       {},
       { withCredentials: true },
     );
