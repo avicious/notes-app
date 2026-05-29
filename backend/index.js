@@ -34,7 +34,7 @@ app.use(
   cors({
     origin:
       process.env.NODE_ENV === "production"
-        ? "https://notes-app-domain.com"
+        ? "https://notes-app-u4o4.onrender.com"
         : "http://localhost:5173",
     methods: ["GET", "POST", "PATCH", "DELETE"],
     credentials: true, //For HTTP-only cookies
