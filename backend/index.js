@@ -6,6 +6,9 @@ import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
 import authenticateToken from "./utilities.js";
 
+// Defined port for render
+const port = process.env.PORT || 5000;
+
 // Models
 import User from "./models/User.js";
 import Note from "./models/Note.js";
@@ -460,7 +463,7 @@ app.get(
 const startServer = async () => {
   try {
     await connectDB();
-    app.listen(8000, () => {
+    app.listen(port, "0.0.0.0", () => {
       console.log("Server running");
     });
   } catch (error) {
