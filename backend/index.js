@@ -34,7 +34,7 @@ app.use(
   cors({
     origin:
       process.env.NODE_ENV === "production"
-        ? "https://vertexnotes.netlify.app/"
+        ? "https://vertexnotes.netlify.app"
         : "http://localhost:5173",
     methods: ["GET", "POST", "PATCH", "DELETE"],
     credentials: true, //For HTTP-only cookies
